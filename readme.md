@@ -93,18 +93,18 @@ Pull the repo from GitHub:
 git clone https://github.com/Azure/aks-rdma-infiniband.git
 ```
 
-Build and push the container, inputting UBUNTU_VERSION 18.04 or 22.04 according to AKS Cluster version:
+Build and push the container, inputting `--build-arg UBUNTU_VERSION=18.04 --build-arg MELLANOX_VERSION=5.6-2.0.9.0` or `--build-arg UBUNTU_VERSION=22.04 --build-arg MELLANOX_VERSION=5.8-2.0.3.0` according to AKS Cluster version:
 ```
 cd aks-rdma-infiniband
-docker build -build-arg UBUNTU_VERSION=22.04 -t ${acr_name}.azurecr.io/mlnx-driver-install . # or 18.04 depending on AKS Cluster version
+docker build --build-arg UBUNTU_VERSION=22.04  --build-arg MELLANOX_VERSION=5.8-2.0.3.0 -t ${acr_name}.azurecr.io/mlnx-driver-install . # or 18.04 depending on AKS Cluster version
 docker push ${acr_name}.azurecr.io/mlnx-driver-install
 ```
 
 Update the container name and deploy the daemonset, inputting UBUNTU_VERSION 18.04 or 22.04 according to AKS Cluster version:
 ```
-sed -i "s/<insert image name here>/${acr_name}.azurecr.io\/mlnx-driver-install:latest/g" 
-sed -i "s/<insert_ubuntu_version_here>/22.04/g" # or 18.04 depending on AKS Cluster version
-shared-hca-images/driver-installation.yml
+sed -i "s/<insert image name here>/${acr_name}.azurecr.io\/mlnx-driver-install:latest/g" shared-hca-images/driver-installation.yml 
+sed -i "s/<insert_ubuntu_version_here>/22.04/g" shared-hca-images/driver-installation.yml # or 18.04 depending on AKS Cluster version
+sed -i "s/<insert_mellanox_verion_here>/5.8-2.0.3.0/g" shared-hca-images/driver-installation.yml # or 5.6-2.0.9.0 for Ubuntu 18.04
 kubectl apply -k shared-hca-images/.
 ```
 
